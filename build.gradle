@@ -1,0 +1,27 @@
+plugins {
+  id "java-gradle-plugin"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories { jcenter() }
+
+dependencies {
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.google.truth:truth:0.30'
+}
+
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+
+gradlePlugin {
+  plugins {
+    capsule {
+      id = "com.jonaslasauskas.capsule"
+      implementationClass = "com.jonaslasauskas.gradle.plugin.capsule.Plugin"
+    }
+  }
+}
+
+test.dependsOn(jar)
