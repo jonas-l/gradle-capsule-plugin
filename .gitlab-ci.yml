@@ -6,4 +6,4 @@ check:
   image: java:8-jdk-alpine
   script: |
     apk --update add bash libstdc++
-    ./gradlew check
+    ./gradlew --no-daemon check
