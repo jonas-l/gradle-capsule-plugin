@@ -1,0 +1,9 @@
+stages:
+- test
+
+check:
+  stage: test
+  image: java:8-jdk-alpine
+  script: |
+    apk --update add bash libstdc++
+    ./gradlew check
