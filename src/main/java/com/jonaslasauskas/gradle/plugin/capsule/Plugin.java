@@ -12,6 +12,7 @@ class Plugin implements org.gradle.api.Plugin<Project> {
     project.getPluginManager().apply(JavaPlugin.class);
     
     Capsule capsuleTask = project.getTasks().create("capsule", Capsule.class);
+    capsuleTask.executesInside(project);
     
     Task assembleTask = project.getTasks().findByName("assemble");
     assembleTask.dependsOn(capsuleTask);

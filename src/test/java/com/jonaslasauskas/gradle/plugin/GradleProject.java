@@ -1,13 +1,17 @@
 package com.jonaslasauskas.gradle.plugin;
 
+import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static org.gradle.api.Project.DEFAULT_BUILD_FILE;
+import static org.gradle.api.initialization.Settings.DEFAULT_SETTINGS_FILE;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.Optional;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -26,14 +30,26 @@ public final class GradleProject extends TemporaryFolder {
   
   private final Iterable<? extends CharSequence> buildScript;
   
+  private Optional<String> buildSettings = empty();
+  
   
   GradleProject(GradleRunner runner, String... buildScriptLines) {
     this.runner = runner;
     this.buildScript = asList(buildScriptLines);
   }
   
+  public File buildDirectory() {
+    return new File(this.getRoot(), "build");
+  }
+  
   public GradleProject usingGradleVersion(String gradleVersion) {
     runner.withGradleVersion(gradleVersion);
+    
+    return this;
+  }
+  
+  public GradleProject named(String name) {
+    this.buildSettings = Optional.of(format("rootProject.name = ''{0}''", name));
     
     return this;
   }
@@ -49,6 +65,7 @@ public final class GradleProject extends TemporaryFolder {
   
   private void writeFiles() {
     writeFileContent(DEFAULT_BUILD_FILE, buildScript);
+    buildSettings.ifPresent(content -> writeFileContent(DEFAULT_SETTINGS_FILE, singletonList(content)));
   }
   
   private void writeFileContent(String fileName, Iterable<? extends CharSequence> content) {

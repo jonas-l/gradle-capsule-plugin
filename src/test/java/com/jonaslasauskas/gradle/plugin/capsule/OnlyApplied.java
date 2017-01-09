@@ -1,5 +1,6 @@
 package com.jonaslasauskas.gradle.plugin.capsule;
 
+import static com.google.common.truth.Truth.assert_;
 import static com.jonaslasauskas.gradle.plugin.BuildResultSubject.assertThat;
 
 import java.io.File;
@@ -33,6 +34,13 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     BuildResult build = project.buildWithArguments("assemble");
     
     assertThat(build).task(":capsule").succeeded();
+  }
+  
+  @Test public void produces_jar_with_capsule_classifier() throws Exception {
+    project.named("test").buildWithArguments("assemble");
+    
+    File libs = new File(project.buildDirectory(), "libs");
+    assert_().that(libs.list()).asList().contains("test-capsule.jar");
   }
   
 }
