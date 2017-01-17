@@ -39,7 +39,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   @Test public void produces_jar_with_capsule_classifier() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
-    File libs = new File(project.buildDirectory(), "libs");
+    File libs = project.absoluteFileFor("build/libs");
     assert_().that(libs.list()).asList().contains("test-capsule.jar");
   }
   

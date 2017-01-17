@@ -38,10 +38,6 @@ public final class GradleProject extends TemporaryFolder {
     this.buildScript = asList(buildScriptLines);
   }
   
-  public File buildDirectory() {
-    return new File(this.getRoot(), "build");
-  }
-  
   public GradleProject usingGradleVersion(String gradleVersion) {
     runner.withGradleVersion(gradleVersion);
     
@@ -74,6 +70,10 @@ public final class GradleProject extends TemporaryFolder {
     } catch (IOException e) {
       throw new RuntimeException("Could not write content to '" + fileName + "'", e);
     }
+  }
+  
+  public File absoluteFileFor(String path) {
+    return new File(getRoot(), path);
   }
   
   
