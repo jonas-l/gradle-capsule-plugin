@@ -5,7 +5,7 @@ Produces a [Capsule][1] jar as configured in Gradle build script.
 
 > A capsule is a single executable JAR that contains everything your application needs to run either in the form of embedded files or as declarative metadata.
 
-This plugin implicitly applies [Java plugin][2] and hooks into the workflow before `assemble` task:
+This plugin implicitly applies [Java plugin][2] and hooks into the workflow after `jar` and before `assemble` tasks:
 
 ```bob
 
@@ -21,8 +21,8 @@ This plugin implicitly applies [Java plugin][2] and hooks into the workflow befo
          |
   .-------------.
   |     jar     |
-  '-------------'
-         ^
+  '-------------'^
+         ^        \
          |        .---------.
          |        | capsule |
          |        '---------'
