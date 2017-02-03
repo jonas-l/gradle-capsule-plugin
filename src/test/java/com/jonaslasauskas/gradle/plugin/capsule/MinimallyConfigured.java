@@ -55,14 +55,14 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   @Test public void produces_jar_with_capsule_classifier() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
-    File libs = project.absoluteFileFor("build/libs");
+    File libs = project.file("build/libs");
     assert_().that(libs.list()).asList().contains("test-capsule.jar");
   }
   
   @Test public void capsule_jar_reports_default_capsule_version() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
-    ExecutableJar capsuleJar = ExecutableJar.at(project.absoluteFileFor("build/libs/test-capsule.jar"));
+    ExecutableJar capsuleJar = ExecutableJar.at(project.file("build/libs/test-capsule.jar"));
     Execution execution = capsuleJar.withSystemProperty("capsule.version").run();
     
     assert_().about(execution()).that(execution).standardError().isEmpty();
@@ -72,7 +72,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   @Test public void capsule_jar_executes_application_class() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
-    ExecutableJar capsuleJar = ExecutableJar.at(project.absoluteFileFor("build/libs/test-capsule.jar"));
+    ExecutableJar capsuleJar = ExecutableJar.at(project.file("build/libs/test-capsule.jar"));
     assert_().about(execution()).that(capsuleJar.run()).standardOutput().startsWith("Hello Gradle, Capsule");
   }
   

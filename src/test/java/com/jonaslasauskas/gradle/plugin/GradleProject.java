@@ -93,7 +93,7 @@ public final class GradleProject extends TemporaryFolder {
     }
   }
   
-  public File absoluteFileFor(String path) {
+  public File file(String path) {
     return new File(getRoot(), path);
   }
   
