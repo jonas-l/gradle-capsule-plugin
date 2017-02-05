@@ -45,8 +45,10 @@ public class Capsule extends Jar {
       Set<File> capsuleArtifacts = p.getConfigurations().getAt("capsule").resolve();
       from(capsuleArtifacts.stream().map(project::zipTree).toArray());
       
-      from(p.getTasks().getAt("jar").getOutputs().getFiles());
+      Jar jarTask = (Jar) p.getTasks().getAt("jar");
+      from(jarTask.getOutputs().getFiles());
       
+      capsuleManifest.defaultApplicationClassTo((String) jarTask.getManifest().getAttributes().get("Main-Class"));
       capsuleManifest.writeTo(getManifest());
     });
   }

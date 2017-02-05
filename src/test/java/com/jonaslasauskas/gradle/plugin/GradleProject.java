@@ -13,7 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public final class GradleProject extends TemporaryFolder {
   
   private final GradleRunner runner;
   
-  private final Iterable<? extends CharSequence> buildScript;
+  private final List<String> buildScript;
   
   private Optional<String> buildSettings = empty();
   
@@ -41,8 +43,10 @@ public final class GradleProject extends TemporaryFolder {
   
   GradleProject(GradleRunner runner, String... buildScriptLines) {
     this.runner = runner;
-    this.buildScript = asList(buildScriptLines);
+    this.buildScript = new ArrayList<>();
     this.files = new HashMap<>();
+    
+    this.buildScript.addAll(asList(buildScriptLines));
   }
   
   public GradleProject usingGradleVersion(String gradleVersion) {
@@ -59,6 +63,12 @@ public final class GradleProject extends TemporaryFolder {
   
   public GradleProject withFile(String fileName, String... content) {
     this.files.put(fileName, content);
+    
+    return this;
+  }
+  
+  public GradleProject withAdditionalBuildScript(String... lines) {
+    this.buildScript.addAll(asList(lines));
     
     return this;
   }

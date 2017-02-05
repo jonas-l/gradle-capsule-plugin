@@ -10,6 +10,7 @@ repositories { jcenter() }
 dependencies {
   testCompile 'junit:junit:4.12'
   testCompile 'com.google.truth:truth:0.30'
+  testCompile 'com.google.guava:guava:19.0'
 }
 
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
