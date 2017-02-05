@@ -61,6 +61,19 @@ public final class GradleProject extends TemporaryFolder {
     return this;
   }
   
+  public GradleProject withEntryPointClassAt(String packageName, String className) {
+    return withEntryPointClassAt(packageName, className, packageName + "." + className);
+  }
+  
+  public GradleProject withEntryPointClassAt(String packageName, String className, String contentPrint) {
+    return withFile(
+        "src/main/java/" + packageName.replace('.', '/') + "/" + className + ".java",
+        "package " + packageName + ";",
+        "class " + className + " {",
+        "  public static void main(String[] args) { System.out.println(\"" + contentPrint + "\"); }",
+        "}");
+  }
+  
   public GradleProject withFile(String fileName, String... content) {
     this.files.put(fileName, content);
     

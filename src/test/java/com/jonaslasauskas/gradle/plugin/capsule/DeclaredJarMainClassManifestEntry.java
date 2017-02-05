@@ -29,11 +29,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
           "repositories { jcenter() }",
           "jar.manifest.attributes 'Main-Class': 'test.JarMain'",
           "capsule.capsuleManifest.applicationId = 'test'")
-      .withFile("src/main/java/test/JarMain.java",
-          "package test;",
-          "class JarMain {",
-          "  public static void main(String[] args) { System.out.println(\"Hello from jar!\"); }",
-          "}");
+      .withEntryPointClassAt("test", "JarMain", "Hello from Jar!");
   
   
   public DeclaredJarMainClassManifestEntry(String version) {
@@ -55,13 +51,8 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   
   @Test public void has_no_effect_when_applicationClass_entry_in_capsuleManifest_exists() throws Exception {
     project
-        .withAdditionalBuildScript(
-            "capsule.capsuleManifest.applicationClass = 'test.CapsuleMain'")
-        .withFile("src/main/java/test/CapsuleMain.java",
-            "package test;",
-            "class CapsuleMain {",
-            "  public static void main(String[] args) { System.out.println(\"Hello from Capsule!\"); }",
-            "}")
+        .withAdditionalBuildScript("capsule.capsuleManifest.applicationClass = 'test.CapsuleMain'")
+        .withEntryPointClassAt("test", "CapsuleMain", "Hello from Capsule!")
         .named("test").buildWithArguments("assemble");
     
     Execution capsule = ExecutableJar.at(project.file("build/libs/test-capsule.jar")).run();
