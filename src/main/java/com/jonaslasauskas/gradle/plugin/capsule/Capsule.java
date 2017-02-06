@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.util.ConfigureUtil;
@@ -42,15 +43,29 @@ public class Capsule extends Jar {
     this.setBaseName(project.getName());
     
     project.afterEvaluate(p -> {
-      Set<File> capsuleArtifacts = p.getConfigurations().getAt("capsule").resolve();
-      from(capsuleArtifacts.stream().map(project::zipTree).toArray());
+      mergeContentOf(p.getConfigurations().getAt("capsule"), p);
       
-      Jar jarTask = (Jar) p.getTasks().getAt("jar");
-      from(jarTask.getOutputs().getFiles());
+      from(p.getTasks().getAt("jar").getOutputs().getFiles());
       
-      capsuleManifest.defaultApplicationClassTo((String) jarTask.getManifest().getAttributes().get("Main-Class"));
+      defaultAttributesUsingDetailsFrom(p);
       capsuleManifest.writeTo(getManifest());
     });
+  }
+  
+  private void mergeContentOf(Configuration configuration, Project project) {
+    Set<File> capsuleArtifacts = configuration.resolve();
+    from(capsuleArtifacts.stream().map(project::zipTree).toArray());
+  }
+  
+  private void defaultAttributesUsingDetailsFrom(Project project) {
+    Object projectGroup = project.getGroup();
+    String projectName = project.getName();
+    if (projectGroup != null) {
+      capsuleManifest.defaultApplicationIdTo(projectGroup + "." + projectName);
+    }
+    
+    Jar jarTask = (Jar) project.getTasks().getAt("jar");
+    capsuleManifest.defaultApplicationClassTo((String) jarTask.getManifest().getAttributes().get("Main-Class"));
   }
   
 }

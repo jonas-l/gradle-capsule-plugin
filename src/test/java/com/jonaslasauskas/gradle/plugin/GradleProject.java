@@ -92,6 +92,7 @@ public final class GradleProject extends TemporaryFolder {
     return runner
         .withProjectDir(this.getRoot())
         .withArguments(arguments)
+        .withDebug(true)
         .build();
   }
   

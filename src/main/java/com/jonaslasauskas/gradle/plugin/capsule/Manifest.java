@@ -33,6 +33,12 @@ public final class Manifest {
     return applicationClass;
   }
   
+  void defaultApplicationIdTo(String id) {
+    if (applicationId == null) {
+      applicationId = id;
+    }
+  }
+  
   void defaultApplicationClassTo(String className) {
     if (applicationClass == null) {
       applicationClass = className;
