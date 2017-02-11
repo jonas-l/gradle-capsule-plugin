@@ -14,6 +14,10 @@ dependencies {
 
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
+test {
+  dependsOn(jar)
+  testLogging { exceptionFormat "full" }
+}
 
 gradlePlugin {
   plugins {
@@ -23,5 +27,3 @@ gradlePlugin {
     }
   }
 }
-
-test.dependsOn(jar)
