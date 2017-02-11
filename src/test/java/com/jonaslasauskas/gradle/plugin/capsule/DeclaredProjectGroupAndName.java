@@ -43,8 +43,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
         .withSystemProperty("capsule.version")
         .run();
     
-    assertThat(capsuleVersion).succeeded();
-    assertThat(capsuleVersion).standardOutput().contains("com.example.test");
+    assertThat(capsuleVersion).succeededAnd().standardOutput().contains("com.example.test");
   }
   
   @Test public void has_no_effect_when_applicationId_entry_in_capsuleManifest_exists() throws Exception {
@@ -56,8 +55,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
         .withSystemProperty("capsule.version")
         .run();
     
-    assertThat(capsuleVersion).succeeded();
-    assertThat(capsuleVersion).standardOutput().contains("capsuleManifestId");
+    assertThat(capsuleVersion).succeededAnd().standardOutput().contains("capsuleManifestId");
   }
   
 }

@@ -19,19 +19,30 @@ public final class ExecutionSubject extends Subject<ExecutionSubject, Execution>
   }
   
   public void succeeded() {
+    succeededAnd();
+  }
+  
+  public OutputsSubject succeededAnd() {
     int exitCode = actual().exitCode;
     if (exitCode != 0) {
       String command = Joiner.on(' ').join(actual().command);
       failWithRawMessage("Execution of '%s' was expected to succeed, but exited with code '%s' and reported the following errors:\n%s", command, exitCode, actual().error);
     }
+    
+    return new OutputsSubject();
   }
   
-  public StringSubject standardError() {
-    return Truth.assertThat(actual().error);
-  }
   
-  public StringSubject standardOutput() {
-    return Truth.assertThat(actual().output);
+  public final class OutputsSubject {
+    
+    public StringSubject standardError() {
+      return Truth.assertThat(actual().error);
+    }
+    
+    public StringSubject standardOutput() {
+      return Truth.assertThat(actual().output);
+    }
+    
   }
   
   

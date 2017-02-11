@@ -43,8 +43,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     Execution capsule = ExecutableJar.at(project.file("build/libs/test-capsule.jar")).run();
     
     assertThat(original).succeeded();
-    assertThat(capsule).succeeded();
-    StringSubject capsuleOutput = assertThat(capsule).standardOutput();
+    StringSubject capsuleOutput = assertThat(capsule).succeededAnd().standardOutput();
     capsuleOutput.isNotEmpty();
     capsuleOutput.isEqualTo(original.output);
   }
@@ -56,8 +55,8 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
         .named("test").buildWithArguments("assemble");
     
     Execution capsule = ExecutableJar.at(project.file("build/libs/test-capsule.jar")).run();
-    assertThat(capsule).succeeded();
-    assertThat(capsule).standardOutput().startsWith("Hello from Capsule!");
+    
+    assertThat(capsule).succeededAnd().standardOutput().startsWith("Hello from Capsule!");
   }
   
 }

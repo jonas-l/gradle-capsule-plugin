@@ -65,15 +65,16 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     ExecutableJar capsuleJar = ExecutableJar.at(project.file("build/libs/test-capsule.jar"));
     Execution execution = capsuleJar.withSystemProperty("capsule.version").run();
     
-    assert_().about(execution()).that(execution).standardError().isEmpty();
-    assert_().about(execution()).that(execution).standardOutput().contains("Version 1.0");
+    assert_().about(execution()).that(execution).succeededAnd().standardOutput().contains("Version 1.0");
   }
   
   @Test public void capsule_jar_executes_application_class() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
     ExecutableJar capsuleJar = ExecutableJar.at(project.file("build/libs/test-capsule.jar"));
-    assert_().about(execution()).that(capsuleJar.run()).standardOutput().startsWith("Hello Gradle, Capsule");
+    Execution execution = capsuleJar.run();
+    
+    assert_().about(execution()).that(execution).succeededAnd().standardOutput().startsWith("Hello Gradle, Capsule");
   }
   
 }
