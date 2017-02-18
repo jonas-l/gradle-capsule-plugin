@@ -2,6 +2,7 @@ package com.jonaslasauskas.gradle.plugin;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.CharStreams.copy;
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -17,6 +18,9 @@ import java.util.List;
 public final class ExecutableJar {
   
   public static ExecutableJar at(File jarFile) {
+    File directory = jarFile.getParentFile();
+    assertThat(directory.list()).asList().named("Files at %s", directory).contains(jarFile.getName());
+    
     return new ExecutableJar(jarFile);
   }
   

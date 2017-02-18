@@ -33,6 +33,18 @@ public final class Manifest {
     return applicationClass;
   }
   
+  void defaultApplicationIdTo(String id) {
+    if (applicationId == null) {
+      applicationId = id;
+    }
+  }
+  
+  void defaultApplicationClassTo(String className) {
+    if (applicationClass == null) {
+      applicationClass = className;
+    }
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     HashMap<String, String> capsuleAttributes = new HashMap<>();
     capsuleAttributes.put("Premain-Class", premainClass);
