@@ -27,3 +27,8 @@ check v3.3:
   <<: *check
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.3'
+
+check v3.4:
+  <<: *check
+  variables:
+    GRADLE_VERSION_UNDER_TEST: '3.4'
