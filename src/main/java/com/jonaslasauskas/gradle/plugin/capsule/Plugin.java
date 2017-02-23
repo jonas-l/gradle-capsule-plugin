@@ -1,5 +1,7 @@
 package com.jonaslasauskas.gradle.plugin.capsule;
 
+import static org.gradle.api.plugins.BasePlugin.BUILD_GROUP;
+
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
@@ -16,6 +18,8 @@ class Plugin implements org.gradle.api.Plugin<Project> {
     });
     
     Capsule capsuleTask = project.getTasks().create("capsule", Capsule.class);
+    capsuleTask.setGroup(BUILD_GROUP);
+    capsuleTask.setDescription("Assembles a jar archive containing Capsule, caplets, and necessary jars to run an application.");
     project.getTasks().withType(Capsule.class).all(task -> task.executesInside(project));
     
     Task assembleTask = project.getTasks().findByName("assemble");

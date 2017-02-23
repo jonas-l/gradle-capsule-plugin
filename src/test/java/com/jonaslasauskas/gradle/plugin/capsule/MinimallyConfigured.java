@@ -46,6 +46,12 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     project.usingGradleVersion(version);
   }
   
+  @Test public void is_listed_among_gradle_tasks() throws Exception {
+    BuildResult build = project.buildWithArguments("tasks");
+    
+    assert_().that(build.getOutput()).contains("capsule - ");
+  }
+  
   @Test public void executes_capsule_task_on_assemble() throws Exception {
     BuildResult build = project.buildWithArguments("assemble");
     
