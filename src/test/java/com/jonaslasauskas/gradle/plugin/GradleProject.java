@@ -22,15 +22,20 @@ import java.util.Optional;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 
 
-public final class GradleProject extends TemporaryFolder {
+public final class GradleProject implements TestRule {
   
   public static ForPluginTesting forTestingPluginAt(File classpath) {
     return new ForPluginTesting(classpath);
   }
   
+  
+  private final TemporaryFolder temporaryFolder;
   
   private final GradleRunner runner;
   
@@ -41,7 +46,8 @@ public final class GradleProject extends TemporaryFolder {
   private final Map<String, String[]> files;
   
   
-  GradleProject(GradleRunner runner, String... buildScriptLines) {
+  GradleProject(TemporaryFolder temporaryFolder, GradleRunner runner, String... buildScriptLines) {
+    this.temporaryFolder = temporaryFolder;
     this.runner = runner;
     this.buildScript = new ArrayList<>();
     this.files = new HashMap<>();
@@ -90,7 +96,7 @@ public final class GradleProject extends TemporaryFolder {
     writeFiles();
     
     return runner
-        .withProjectDir(this.getRoot())
+        .withProjectDir(temporaryFolder.getRoot())
         .withArguments(arguments)
         .withDebug(true)
         .build();
@@ -109,7 +115,7 @@ public final class GradleProject extends TemporaryFolder {
   
   private void writeFileContent(String fileName, Iterable<? extends CharSequence> content) {
     try {
-      Path filePath = getRoot().toPath().resolve(fileName);
+      Path filePath = temporaryFolder.getRoot().toPath().resolve(fileName);
       createDirectories(filePath.getParent());
       write(filePath, content, utf8);
     } catch (IOException e) {
@@ -118,22 +124,25 @@ public final class GradleProject extends TemporaryFolder {
   }
   
   public File file(String path) {
-    return new File(getRoot(), path);
+    return new File(temporaryFolder.getRoot(), path);
+  }
+  
+  @Override public Statement apply(Statement base, Description description) {
+    return temporaryFolder.apply(base, description);
   }
   
   
-  public static final class ForPluginTesting {
+  public static final class ForPluginTesting extends TemporaryFolder {
     
     private final GradleRunner runner;
     
     
-    ForPluginTesting(File pluginPath) {
-      runner = GradleRunner.create()
-          .withPluginClasspath(singletonList(pluginPath));
+    private ForPluginTesting(File pluginPath) {
+      runner = GradleRunner.create().withPluginClasspath(singletonList(pluginPath));
     }
     
     public GradleProject withBuildScript(String... contentLines) {
-      return new GradleProject(runner, contentLines);
+      return new GradleProject(this, runner, contentLines);
     }
     
   }
