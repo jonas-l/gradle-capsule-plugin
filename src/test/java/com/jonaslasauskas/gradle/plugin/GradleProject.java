@@ -6,6 +6,7 @@ import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
+import static java.util.stream.Collectors.joining;
 import static org.gradle.api.Project.DEFAULT_BUILD_FILE;
 import static org.gradle.api.initialization.Settings.DEFAULT_SETTINGS_FILE;
 
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -25,6 +28,8 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import com.google.common.base.Joiner;
 
 
 
@@ -41,7 +46,9 @@ public final class GradleProject implements TestRule {
   
   private final List<String> buildScript;
   
-  private Optional<String> buildSettings = empty();
+  private Optional<String> rootProjectName = empty();
+  
+  private final List<String> subprojectNames;
   
   private final Map<String, String[]> files;
   
@@ -50,6 +57,7 @@ public final class GradleProject implements TestRule {
     this.temporaryFolder = temporaryFolder;
     this.runner = runner;
     this.buildScript = new ArrayList<>();
+    this.subprojectNames = new ArrayList<>();
     this.files = new HashMap<>();
     
     this.buildScript.addAll(asList(buildScriptLines));
@@ -62,7 +70,13 @@ public final class GradleProject implements TestRule {
   }
   
   public GradleProject named(String name) {
-    this.buildSettings = Optional.of(format("rootProject.name = ''{0}''", name));
+    this.rootProjectName = Optional.of(format("rootProject.name = ''{0}''", name));
+    
+    return this;
+  }
+  
+  public GradleProject withSubproject(String name) {
+    this.subprojectNames.add(name);
     
     return this;
   }
@@ -106,7 +120,7 @@ public final class GradleProject implements TestRule {
     files.forEach(this::writeFileContent);
     
     writeFileContent(DEFAULT_BUILD_FILE, buildScript);
-    buildSettings.ifPresent(content -> writeFileContent(DEFAULT_SETTINGS_FILE, singletonList(content)));
+    buildSettings().ifPresent(content -> writeFileContent(DEFAULT_SETTINGS_FILE, content));
   }
   
   private void writeFileContent(String fileName, String... content) {
@@ -121,6 +135,18 @@ public final class GradleProject implements TestRule {
     } catch (IOException e) {
       throw new RuntimeException("Could not write content to '" + fileName + "'", e);
     }
+  }
+  
+  private Optional<Iterable<String>> buildSettings() {
+    ArrayList<String> lines = new ArrayList<>();
+    
+    rootProjectName.ifPresent(lines::add);
+    
+    if (!subprojectNames.isEmpty()) {
+      lines.add(subprojectNames.stream().collect(joining("', '", "include '", "'")));
+    }
+    
+    return lines.isEmpty() ? empty() : Optional.of(lines);
   }
   
   public File file(String path) {

@@ -35,9 +35,8 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
           "    applicationClass = 'test.Main'",
           "  }",
           "}")
-      .withFile("settings.gradle",
-          "rootProject.name = 'test'",
-          "include 'subproject'")
+      .named("test")
+      .withSubproject("subproject")
       .withFile("subproject/build.gradle", "apply plugin: 'java'")
       .withFile("subproject/src/main/java/subproject/Message.java",
           "package subproject;",
