@@ -1,6 +1,8 @@
 package com.jonaslasauskas.gradle.plugin.capsule;
 
 
+import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CONFIGURATION_NAME;
+
 import java.io.File;
 import java.util.Set;
 
@@ -46,6 +48,7 @@ public class Capsule extends Jar {
       mergeContentOf(p.getConfigurations().getAt("capsule"), p);
       
       from(p.getTasks().getAt("jar").getOutputs().getFiles());
+      from(p.getConfigurations().getAt(RUNTIME_CONFIGURATION_NAME));
       
       defaultAttributesUsingDetailsFrom(p);
       capsuleManifest.writeTo(getManifest());
