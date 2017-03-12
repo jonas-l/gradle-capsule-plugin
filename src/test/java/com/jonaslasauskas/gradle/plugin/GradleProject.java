@@ -162,13 +162,23 @@ public final class GradleProject implements TestRule {
     
     private final GradleRunner runner;
     
+    private final boolean persistent;
+    
     
     private ForPluginTesting(File pluginPath) {
+      super(Optional.ofNullable(System.getenv("PERSISTENT_TEST_GRADLE_PROJECT_DIR")).map(File::new).orElse(null));
+      this.persistent = System.getenv("PERSISTENT_TEST_GRADLE_PROJECT_DIR") != null;
       runner = GradleRunner.create().withPluginClasspath(singletonList(pluginPath));
     }
     
     public GradleProject withBuildScript(String... contentLines) {
       return new GradleProject(this, runner, contentLines);
+    }
+    
+    @Override protected void after() {
+      if (!persistent) {
+        super.after();
+      }
     }
     
   }

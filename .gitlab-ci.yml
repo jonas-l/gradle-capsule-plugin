@@ -7,28 +7,38 @@ stages:
   script: |
     apk --update add bash libstdc++
     ./gradlew --no-daemon check
+  artifacts:
+    paths:
+    - build/tmp
+    expire_in: 1 day
+    when: on_failure
 
 check v3.0:
   <<: *check
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.0'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
 check v3.1:
   <<: *check
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.1'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
 check v3.2.1:
   <<: *check
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.2.1'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
 check v3.3:
   <<: *check
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.3'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
 check v3.4:
   <<: *check
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.4'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
