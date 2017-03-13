@@ -17,10 +17,11 @@ class Plugin implements org.gradle.api.Plugin<Project> {
       dependencySet.add(project.getDependencies().create("co.paralleluniverse:capsule:1.0.3"));
     });
     
+    project.getTasks().withType(Capsule.class).all(task -> task.executesInside(project));
+    
     Capsule capsuleTask = project.getTasks().create("capsule", Capsule.class);
     capsuleTask.setGroup(BUILD_GROUP);
     capsuleTask.setDescription("Assembles a jar archive containing Capsule, caplets, and necessary jars to run an application.");
-    project.getTasks().withType(Capsule.class).all(task -> task.executesInside(project));
     
     Task assembleTask = project.getTasks().findByName("assemble");
     assembleTask.dependsOn(capsuleTask);
