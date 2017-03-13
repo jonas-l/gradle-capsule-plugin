@@ -37,8 +37,8 @@ check v3.3:
     GRADLE_VERSION_UNDER_TEST: '3.3'
     PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
-check v3.4:
+check v3.4.1:
   <<: *check
   variables:
-    GRADLE_VERSION_UNDER_TEST: '3.4'
+    GRADLE_VERSION_UNDER_TEST: '3.4.1'
     PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
