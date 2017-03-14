@@ -8,6 +8,7 @@ stages:
     apk --update add bash libstdc++
     ./gradlew --no-daemon check
   artifacts:
+    name: '${CI_PROJECT_NAME}_${CI_BUILD_ID}'
     paths:
     - build/tmp
     expire_in: 1 day
