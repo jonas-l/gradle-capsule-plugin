@@ -11,7 +11,7 @@ stages:
     name: '${CI_PROJECT_NAME}_${CI_BUILD_ID}'
     paths:
     - build/tmp
-    expire_in: 1 day
+    expire_in: 7 days
     when: on_failure
 
 check v3.0:
