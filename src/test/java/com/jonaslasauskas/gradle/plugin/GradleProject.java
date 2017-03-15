@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -28,8 +26,6 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import com.google.common.base.Joiner;
 
 
 
@@ -111,6 +107,7 @@ public final class GradleProject implements TestRule {
     
     return runner
         .withProjectDir(temporaryFolder.getRoot())
+        .withTestKitDir(new File(temporaryFolder.getRoot(), ".gradle_home"))
         .withArguments(arguments)
         .withDebug(true)
         .build();
