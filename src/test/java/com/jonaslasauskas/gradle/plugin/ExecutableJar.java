@@ -3,6 +3,7 @@ package com.jonaslasauskas.gradle.plugin;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.CharStreams.copy;
 import static com.google.common.truth.Truth.assertThat;
+import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -12,6 +13,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Joiner;
 
 
 
@@ -80,6 +84,8 @@ public final class ExecutableJar {
     
     
     public Execution(ProcessBuilder processBuilder) {
+      command = processBuilder.command();
+      
       try {
         Process process = processBuilder.start();
         
@@ -87,7 +93,7 @@ public final class ExecutableJar {
             Reader outputReader = new InputStreamReader(process.getInputStream(), UTF_8);
             Reader errorReader = new InputStreamReader(process.getErrorStream(), UTF_8)) {
           
-          process.waitFor(42, SECONDS);
+          ensureCompletesIn(process, 42, SECONDS);
           
           StringBuilder outputBuilder = new StringBuilder();
           copy(outputReader, outputBuilder);
@@ -95,7 +101,6 @@ public final class ExecutableJar {
           StringBuilder errorBuilder = new StringBuilder();
           copy(errorReader, errorBuilder);
           
-          command = processBuilder.command();
           exitCode = process.exitValue();
           output = outputBuilder.toString();
           error = errorBuilder.toString();
@@ -104,6 +109,13 @@ public final class ExecutableJar {
         }
       } catch (IOException e) {
         throw new RuntimeException("Execution did not start.", e);
+      }
+    }
+    
+    private void ensureCompletesIn(Process process, int duration, TimeUnit timeUnit) throws InterruptedException {
+      if (!process.waitFor(duration, timeUnit)) {
+        process.destroyForcibly();
+        throw new RuntimeException(format("Execution of ''{0}'' didn''t finished in {1} {2}.", Joiner.on(" ").join(command), duration, timeUnit));
       }
     }
     
