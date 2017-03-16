@@ -73,4 +73,48 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     assertThat(execution).succeeded();
   }
   
+  @Test public void min_update_version_fails_when_available_update_version_too_low() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    minUpdateVersion['1.8'] = '999'",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).failedAnd().standardError().contains("Min. update version: {1.8=999}");
+  }
+  
+  @Test public void min_update_version_succeeds_when_later_update_version_is_available() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    minUpdateVersion['1.8'] = '1'",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).succeeded();
+  }
+  
 }
