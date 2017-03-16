@@ -32,6 +32,16 @@ public final class ExecutionSubject extends Subject<ExecutionSubject, Execution>
     return new OutputsSubject();
   }
   
+  public OutputsSubject failedAnd() {
+    int exitCode = actual().exitCode;
+    if (exitCode == 0) {
+      String command = Joiner.on(' ').join(actual().command);
+      failWithRawMessage("Execution of '%s' was expected to fail, but exited with code '%s' and reported the following output:\n%s", command, exitCode, actual().output);
+    }
+    
+    return new OutputsSubject();
+  }
+  
   
   public final class OutputsSubject {
     
