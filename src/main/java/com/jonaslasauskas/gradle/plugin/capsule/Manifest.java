@@ -57,16 +57,37 @@ public final class Manifest {
   }
   
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
-    HashMap<String, String> capsuleAttributes = new HashMap<>();
-    capsuleAttributes.put("Premain-Class", premainClass);
-    capsuleAttributes.put("Main-Class", mainClass);
-    capsuleAttributes.put("Application-ID", applicationId);
-    capsuleAttributes.put("Application-Class", applicationClass);
-    if (minJavaVersion != null) {
-      capsuleAttributes.put("Min-Java-Version", minJavaVersion);
+    new Attributes()
+        .putIfPresent("Premain-Class", premainClass)
+        .putIfPresent("Main-Class", mainClass)
+        .putIfPresent("Application-ID", applicationId)
+        .putIfPresent("Application-Class", applicationClass)
+        .putIfPresent("Min-Java-Version", minJavaVersion)
+        .writeTo(jarManifest);
+  }
+  
+  
+  private static class Attributes {
+    
+    private final HashMap<String, String> map;
+    
+    
+    public Attributes() {
+      this.map = new HashMap<>();
     }
     
-    jarManifest.attributes(capsuleAttributes);
+    public Attributes putIfPresent(String name, String value) {
+      if (value != null) {
+        map.put(name, value);
+      }
+      
+      return this;
+    }
+    
+    public void writeTo(org.gradle.api.java.archives.Manifest manifest) {
+      manifest.attributes(map);
+    }
+    
   }
   
 }
