@@ -29,6 +29,12 @@ public final class Manifest {
     applicationClass = className;
   }
   
+  void defaultApplicationClassTo(String className) {
+    if (applicationClass == null) {
+      applicationClass = className;
+    }
+  }
+
   public String getApplicationClass() {
     return applicationClass;
   }
@@ -36,12 +42,6 @@ public final class Manifest {
   void defaultApplicationIdTo(String id) {
     if (applicationId == null) {
       applicationId = id;
-    }
-  }
-  
-  void defaultApplicationClassTo(String className) {
-    if (applicationClass == null) {
-      applicationClass = className;
     }
   }
   
