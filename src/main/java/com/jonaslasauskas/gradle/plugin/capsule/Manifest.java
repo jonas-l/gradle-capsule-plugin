@@ -27,6 +27,8 @@ public final class Manifest {
   
   @Input @Optional private String javaVersion;
   
+  @Input private boolean jdkRequired = false;
+  
   
   public void setApplicationId(String id) {
     applicationId = id;
@@ -80,6 +82,14 @@ public final class Manifest {
     this.javaVersion = javaVersion;
   }
   
+  public boolean isJdkRequired() {
+    return jdkRequired;
+  }
+  
+  public void setJdkRequired(boolean jdkRequired) {
+    this.jdkRequired = jdkRequired;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -89,6 +99,7 @@ public final class Manifest {
         .putIfPresent("Min-Java-Version", minJavaVersion)
         .putIfPresent("Min-Update-Version", minUpdateVersion)
         .putIfPresent("Java-Version", javaVersion)
+        .putIfPresent("JDK-Required", jdkRequired ? "true" : null)
         .writeTo(jarManifest);
   }
   

@@ -161,4 +161,26 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     assertThat(execution).succeeded();
   }
   
+  @Test public void jdk_required_succeeds_when_jdk_is_available() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    jdkRequired = true",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).succeeded();
+  }
+  
 }
