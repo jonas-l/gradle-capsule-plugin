@@ -25,6 +25,8 @@ public final class Manifest {
   
   @Input @Optional private Map<String, String> minUpdateVersion = new LinkedHashMap<>();
   
+  @Input @Optional private String javaVersion;
+  
   
   public void setApplicationId(String id) {
     applicationId = id;
@@ -70,6 +72,14 @@ public final class Manifest {
     this.minUpdateVersion = minUpdateVersion;
   }
   
+  public String getJavaVersion() {
+    return javaVersion;
+  }
+  
+  public void setJavaVersion(String javaVersion) {
+    this.javaVersion = javaVersion;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -78,6 +88,7 @@ public final class Manifest {
         .putIfPresent("Application-Class", applicationClass)
         .putIfPresent("Min-Java-Version", minJavaVersion)
         .putIfPresent("Min-Update-Version", minUpdateVersion)
+        .putIfPresent("Java-Version", javaVersion)
         .writeTo(jarManifest);
   }
   
