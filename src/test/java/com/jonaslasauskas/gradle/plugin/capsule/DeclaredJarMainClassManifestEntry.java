@@ -11,6 +11,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
 
 import com.google.common.truth.StringSubject;
+import com.jonaslasauskas.gradle.plugin.CapsuleJar;
 import com.jonaslasauskas.gradle.plugin.ExecutableJar;
 import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
 import com.jonaslasauskas.gradle.plugin.GradleProject;
@@ -40,7 +41,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     project.named("test").buildWithArguments("assemble");
     
     Execution original = ExecutableJar.at(project.file("build/libs/test.jar")).run();
-    Execution capsule = ExecutableJar.at(project.file("build/libs/test-capsule.jar")).run();
+    Execution capsule = CapsuleJar.at(project.file("build/libs/test-capsule.jar")).run();
     
     assertThat(original).succeeded();
     StringSubject capsuleOutput = assertThat(capsule).succeededAnd().standardOutput();
@@ -54,7 +55,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
         .withEntryPointClassAt("test", "CapsuleMain", "Hello from Capsule!")
         .named("test").buildWithArguments("assemble");
     
-    Execution capsule = ExecutableJar.at(project.file("build/libs/test-capsule.jar")).run();
+    Execution capsule = CapsuleJar.at(project.file("build/libs/test-capsule.jar")).run();
     
     assertThat(capsule).succeededAnd().standardOutput().startsWith("Hello from Capsule!");
   }

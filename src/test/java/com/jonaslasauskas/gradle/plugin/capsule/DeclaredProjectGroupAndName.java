@@ -10,7 +10,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
 
-import com.jonaslasauskas.gradle.plugin.ExecutableJar;
+import com.jonaslasauskas.gradle.plugin.CapsuleJar;
 import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
 import com.jonaslasauskas.gradle.plugin.GradleProject;
 import com.jonaslasauskas.gradle.plugin.GradleVersion;
@@ -39,7 +39,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   @Test public void is_used_as_default_applicationId() throws Exception {
     project.buildWithArguments("assemble");
     
-    Execution capsuleVersion = ExecutableJar.at(project.file("build/libs/test-capsule.jar"))
+    Execution capsuleVersion = CapsuleJar.at(project.file("build/libs/test-capsule.jar"))
         .withSystemProperty("capsule.version")
         .run();
     
@@ -51,7 +51,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
         .withAdditionalBuildScript("capsule.capsuleManifest.applicationId = 'capsuleManifestId'")
         .buildWithArguments("assemble");
     
-    Execution capsuleVersion = ExecutableJar.at(project.file("build/libs/test-capsule.jar"))
+    Execution capsuleVersion = CapsuleJar.at(project.file("build/libs/test-capsule.jar"))
         .withSystemProperty("capsule.version")
         .run();
     
