@@ -63,9 +63,7 @@ public final class ExecutableJar {
   }
   
   public Execution run() throws IOException {
-    ProcessBuilder processBuilder = new ProcessBuilder(jarCommand());
-    processBuilder.environment().putAll(environmentVariables);
-    return new Execution(processBuilder);
+    return runWithArguments();
   }
   
   public Execution runWithArguments(String... arguments) {
