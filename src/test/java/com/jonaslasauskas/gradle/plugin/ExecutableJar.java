@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Joiner;
@@ -33,10 +35,13 @@ public final class ExecutableJar {
   
   private final List<String> systemProperties;
   
+  private final Map<String, String> environmentVariables;
+  
   
   public ExecutableJar(File jarFile) {
     jarFilePath = jarFile.getAbsolutePath();
     systemProperties = new ArrayList<>();
+    environmentVariables = new HashMap<>();
   }
   
   public ExecutableJar withSystemProperty(String property) {
@@ -51,15 +56,25 @@ public final class ExecutableJar {
     return this;
   }
   
+  public ExecutableJar withEnvironmentVariable(String name, String value) {
+    environmentVariables.put(name, value);
+    
+    return this;
+  }
+  
   public Execution run() throws IOException {
-    return new Execution(new ProcessBuilder(jarCommand()));
+    ProcessBuilder processBuilder = new ProcessBuilder(jarCommand());
+    processBuilder.environment().putAll(environmentVariables);
+    return new Execution(processBuilder);
   }
   
   public Execution runWithArguments(String... arguments) {
     List<String> command = jarCommand();
     command.addAll(asList(arguments));
     
-    return new Execution(new ProcessBuilder(command));
+    ProcessBuilder processBuilder = new ProcessBuilder(command);
+    processBuilder.environment().putAll(environmentVariables);
+    return new Execution(processBuilder);
   }
   
   private List<String> jarCommand() {
