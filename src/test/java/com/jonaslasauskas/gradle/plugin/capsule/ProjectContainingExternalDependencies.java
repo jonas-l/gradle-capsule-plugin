@@ -10,7 +10,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
 
-import com.jonaslasauskas.gradle.plugin.ExecutableJar;
+import com.jonaslasauskas.gradle.plugin.CapsuleJar;
 import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
 import com.jonaslasauskas.gradle.plugin.GradleProject;
 import com.jonaslasauskas.gradle.plugin.GradleVersion;
@@ -54,7 +54,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
             "}")
         .buildWithArguments("assemble");
     
-    Execution execution = ExecutableJar.at(project.file("build/libs/test-capsule.jar")).run();
+    Execution execution = CapsuleJar.at(project.file("build/libs/test-capsule.jar")).run();
     
     assertThat(execution).succeededAnd().standardOutput().contains("Hello world");
   }

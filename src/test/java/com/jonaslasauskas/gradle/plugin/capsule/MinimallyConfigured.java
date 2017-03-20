@@ -13,6 +13,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
 
+import com.jonaslasauskas.gradle.plugin.CapsuleJar;
 import com.jonaslasauskas.gradle.plugin.ExecutableJar;
 import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
 import com.jonaslasauskas.gradle.plugin.GradleProject;
@@ -68,7 +69,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   @Test public void capsule_jar_reports_default_capsule_version() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
-    ExecutableJar capsuleJar = ExecutableJar.at(project.file("build/libs/test-capsule.jar"));
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
     Execution execution = capsuleJar.withSystemProperty("capsule.version").run();
     
     assert_().about(execution()).that(execution).succeededAnd().standardOutput().contains("Version 1.0");
@@ -77,7 +78,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   @Test public void capsule_jar_executes_application_class() throws Exception {
     project.named("test").buildWithArguments("assemble");
     
-    ExecutableJar capsuleJar = ExecutableJar.at(project.file("build/libs/test-capsule.jar"));
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
     Execution execution = capsuleJar.run();
     
     assert_().about(execution()).that(execution).succeededAnd().standardOutput().startsWith("Hello Gradle, Capsule");
