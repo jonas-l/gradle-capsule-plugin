@@ -22,19 +22,7 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   
   @DataPoint public static final String gradleVersion = GradleVersion.underTest();
   
-  @Rule public final GradleProject project = GradleProject
-      .forTestingPluginAt(new File("build/libs/gradle-capsule-plugin.jar"))
-      .withBuildScript(
-          "plugins { id 'com.jonaslasauskas.capsule' }",
-          "repositories { jcenter() }",
-          "capsule { ",
-          "  capsuleManifest {",
-          "    applicationId = 'test'",
-          "    applicationClass = 'test.Main'",
-          "    minJavaVersion = '1.9'",
-          "  }",
-          "}")
-      .withEntryPointClassAt("test", "Main");
+  @Rule public final GradleProject project = GradleProject.forTestingPluginAt(new File("build/libs/gradle-capsule-plugin.jar"));
   
   
   public DeclaredAttribute(String version) {
@@ -42,7 +30,20 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   }
   
   @Test public void min_java_version_fails_when_available_java_version_too_low() throws Exception {
-    project.named("test").buildWithArguments("assemble");
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    minJavaVersion = '1.9'",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildWithArguments("assemble");
     
     ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
     Execution execution = capsuleJar.run();
@@ -52,7 +53,17 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
   
   @Test public void min_java_version_succeeds_when_later_java_version_is_available() throws Exception {
     project
-        .withAdditionalBuildScript("capsule.capsuleManifest.minJavaVersion = '1.7'")
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    minJavaVersion = '1.1'",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
         .named("test")
         .buildWithArguments("assemble");
     
