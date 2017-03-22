@@ -2,8 +2,10 @@ package com.jonaslasauskas.gradle.plugin.capsule;
 
 import static java.util.stream.Collectors.joining;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.gradle.api.tasks.Input;
@@ -28,6 +30,8 @@ public final class Manifest {
   @Input @Optional private String javaVersion;
   
   @Input private boolean jdkRequired = false;
+  
+  @Input private List<String> jvmArgs = new ArrayList<>();
   
   
   public void setApplicationId(String id) {
@@ -90,6 +94,14 @@ public final class Manifest {
     this.jdkRequired = jdkRequired;
   }
   
+  public List<String> getJvmArgs() {
+    return jvmArgs;
+  }
+  
+  public void setJvmArgs(List<String> jvmArgs) {
+    this.jvmArgs = jvmArgs;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -100,6 +112,7 @@ public final class Manifest {
         .putIfPresent("Min-Update-Version", minUpdateVersion)
         .putIfPresent("Java-Version", javaVersion)
         .putIfPresent("JDK-Required", jdkRequired ? "true" : null)
+        .putIfPresent("JVM-Args", jvmArgs)
         .writeTo(jarManifest);
   }
   
@@ -127,6 +140,14 @@ public final class Manifest {
             .map(entry -> entry.getKey() + "=" + entry.getValue())
             .collect(joining(" "));
         map.put(name, value);
+      }
+      
+      return this;
+    }
+    
+    public Attributes putIfPresent(String name, List<String> values) {
+      if (values != null && !values.isEmpty()) {
+        map.put(name, String.join(" ", values));
       }
       
       return this;

@@ -183,4 +183,32 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     assertThat(execution).succeeded();
   }
   
+  @Test public void jvm_args_are_passed_during_execution() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    jvmArgs << '-Dgreeting=Args'",
+            "  }",
+            "}")
+        .withFile("src/main/java/test/Main.java",
+            "package test;",
+            "class Main {",
+            "  public static void main(String[] args) {",
+            "    System.out.println(\"Hello \" + System.getProperty(\"greeting\"));",
+            "  }",
+            "}")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).succeededAnd().standardOutput().contains("Hello Args");
+  }
+  
 }
