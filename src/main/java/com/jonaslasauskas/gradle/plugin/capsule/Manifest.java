@@ -33,6 +33,8 @@ public final class Manifest {
   
   @Input private List<String> jvmArgs = new ArrayList<>();
   
+  @Input private List<String> args = new ArrayList<>();
+  
   
   public void setApplicationId(String id) {
     applicationId = id;
@@ -102,6 +104,14 @@ public final class Manifest {
     this.jvmArgs = jvmArgs;
   }
   
+  public List<String> getArgs() {
+    return args;
+  }
+  
+  public void setArgs(List<String> args) {
+    this.args = args;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -113,6 +123,7 @@ public final class Manifest {
         .putIfPresent("Java-Version", javaVersion)
         .putIfPresent("JDK-Required", jdkRequired ? "true" : null)
         .putIfPresent("JVM-Args", jvmArgs)
+        .putIfPresent("Args", args)
         .writeTo(jarManifest);
   }
   
