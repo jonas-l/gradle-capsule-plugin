@@ -35,6 +35,8 @@ public final class Manifest {
   
   @Input private List<String> args = new ArrayList<>();
   
+  @Input private Map<String, String> environmentVariables = new LinkedHashMap<>();
+  
   
   public void setApplicationId(String id) {
     applicationId = id;
@@ -112,6 +114,14 @@ public final class Manifest {
     this.args = args;
   }
   
+  public Map<String, String> getEnvironmentVariables() {
+    return environmentVariables;
+  }
+  
+  public void setEnvironmentVariables(Map<String, String> environmentVariables) {
+    this.environmentVariables = environmentVariables;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -124,6 +134,7 @@ public final class Manifest {
         .putIfPresent("JDK-Required", jdkRequired ? "true" : null)
         .putIfPresent("JVM-Args", jvmArgs)
         .putIfPresent("Args", args)
+        .putIfPresent("Environment-Variables", environmentVariables)
         .writeTo(jarManifest);
   }
   

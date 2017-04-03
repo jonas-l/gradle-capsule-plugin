@@ -239,4 +239,32 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     assertThat(execution).succeededAnd().standardOutput().contains("Hello world!");
   }
   
+  @Test public void environment_variables_are_passed_when_executing_capsule() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    environmentVariables['greeting'] = 'Hello'",
+            "  }",
+            "}")
+        .withFile("src/main/java/test/Main.java",
+            "package test;",
+            "class Main {",
+            "  public static void main(String[] args) {",
+            "    System.out.println(System.getenv(\"greeting\") + \" world!\");",
+            "  }",
+            "}")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).succeededAnd().standardOutput().contains("Hello world!");
+  }
+  
 }
