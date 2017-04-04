@@ -37,6 +37,8 @@ public final class Manifest {
   
   @Input private Map<String, String> environmentVariables = new LinkedHashMap<>();
   
+  @Input private Map<String, String> systemProperties = new LinkedHashMap<>();
+  
   
   public void setApplicationId(String id) {
     applicationId = id;
@@ -122,6 +124,14 @@ public final class Manifest {
     this.environmentVariables = environmentVariables;
   }
   
+  public Map<String, String> getSystemProperties() {
+    return systemProperties;
+  }
+  
+  public void setSystemProperties(Map<String, String> systemProperties) {
+    this.systemProperties = systemProperties;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -135,6 +145,7 @@ public final class Manifest {
         .putIfPresent("JVM-Args", jvmArgs)
         .putIfPresent("Args", args)
         .putIfPresent("Environment-Variables", environmentVariables)
+        .putIfPresent("System-Properties", systemProperties)
         .writeTo(jarManifest);
   }
   
