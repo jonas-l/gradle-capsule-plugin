@@ -23,20 +23,17 @@ import java.util.Optional;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 
 
 
-public final class GradleProject implements TestRule {
+public final class GradleProject extends TemporaryFolder {
   
-  public static ForPluginTesting forTestingPluginAt(File classpath) {
-    return new ForPluginTesting(classpath);
+  public static GradleProject forTestingPluginAt(File classpath) {
+    return new GradleProject(classpath);
   }
   
   
-  private final TemporaryFolder temporaryFolder;
+  private final boolean persistent;
   
   private final GradleRunner runner;
   
@@ -49,18 +46,24 @@ public final class GradleProject implements TestRule {
   private final Map<String, String[]> files;
   
   
-  GradleProject(TemporaryFolder temporaryFolder, GradleRunner runner, String... buildScriptLines) {
-    this.temporaryFolder = temporaryFolder;
-    this.runner = runner;
+  GradleProject(File pluginPath) {
+    super(Optional.ofNullable(System.getenv("PERSISTENT_TEST_GRADLE_PROJECT_DIR")).map(File::new).orElse(null));
+    this.persistent = System.getenv("PERSISTENT_TEST_GRADLE_PROJECT_DIR") != null;
+    this.runner = GradleRunner.create().withPluginClasspath(singletonList(pluginPath));
+    
     this.buildScript = new ArrayList<>();
     this.subprojectNames = new ArrayList<>();
     this.files = new HashMap<>();
-    
-    this.buildScript.addAll(asList(buildScriptLines));
   }
   
   public GradleProject usingGradleVersion(String gradleVersion) {
     runner.withGradleVersion(gradleVersion);
+    
+    return this;
+  }
+  
+  public GradleProject withBuildScript(String... contentLines) {
+    this.buildScript.addAll(asList(contentLines));
     
     return this;
   }
@@ -106,8 +109,8 @@ public final class GradleProject implements TestRule {
     writeFiles();
     
     return runner
-        .withProjectDir(temporaryFolder.getRoot())
-        .withTestKitDir(new File(temporaryFolder.getRoot(), ".gradle_home"))
+        .withProjectDir(getRoot())
+        .withTestKitDir(new File(getRoot(), ".gradle_home"))
         .withArguments(arguments)
         .withDebug(true)
         .build();
@@ -126,7 +129,7 @@ public final class GradleProject implements TestRule {
   
   private void writeFileContent(String fileName, Iterable<? extends CharSequence> content) {
     try {
-      Path filePath = temporaryFolder.getRoot().toPath().resolve(fileName);
+      Path filePath = getRoot().toPath().resolve(fileName);
       createDirectories(filePath.getParent());
       write(filePath, content, utf8);
     } catch (IOException e) {
@@ -147,37 +150,13 @@ public final class GradleProject implements TestRule {
   }
   
   public File file(String path) {
-    return new File(temporaryFolder.getRoot(), path);
+    return new File(getRoot(), path);
   }
   
-  @Override public Statement apply(Statement base, Description description) {
-    return temporaryFolder.apply(base, description);
-  }
-  
-  
-  public static final class ForPluginTesting extends TemporaryFolder {
-    
-    private final GradleRunner runner;
-    
-    private final boolean persistent;
-    
-    
-    private ForPluginTesting(File pluginPath) {
-      super(Optional.ofNullable(System.getenv("PERSISTENT_TEST_GRADLE_PROJECT_DIR")).map(File::new).orElse(null));
-      this.persistent = System.getenv("PERSISTENT_TEST_GRADLE_PROJECT_DIR") != null;
-      runner = GradleRunner.create().withPluginClasspath(singletonList(pluginPath));
+  @Override protected void after() {
+    if (!persistent) {
+      super.after();
     }
-    
-    public GradleProject withBuildScript(String... contentLines) {
-      return new GradleProject(this, runner, contentLines);
-    }
-    
-    @Override protected void after() {
-      if (!persistent) {
-        super.after();
-      }
-    }
-    
   }
   
   

@@ -4,6 +4,7 @@ import static com.google.common.truth.Truth.assert_;
 
 import com.google.common.base.Joiner;
 import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.IntegerSubject;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
@@ -32,6 +33,16 @@ public final class ExecutionSubject extends Subject<ExecutionSubject, Execution>
     return new OutputsSubject();
   }
   
+  public OutputsSubject failedAnd() {
+    int exitCode = actual().exitCode;
+    if (exitCode == 0) {
+      String command = Joiner.on(' ').join(actual().command);
+      failWithRawMessage("Execution of '%s' was expected to fail, but exited with code '%s' and reported the following output:\n%s", command, exitCode, actual().output);
+    }
+    
+    return new OutputsSubject();
+  }
+  
   
   public final class OutputsSubject {
     
@@ -41,6 +52,10 @@ public final class ExecutionSubject extends Subject<ExecutionSubject, Execution>
     
     public StringSubject standardOutput() {
       return Truth.assertThat(actual().output);
+    }
+    
+    public IntegerSubject exitCode() {
+      return Truth.assertThat(actual().exitCode);
     }
     
   }
