@@ -4,6 +4,7 @@ import static com.google.common.truth.Truth.assert_;
 
 import com.google.common.base.Joiner;
 import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.IntegerSubject;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
@@ -51,6 +52,10 @@ public final class ExecutionSubject extends Subject<ExecutionSubject, Execution>
     
     public StringSubject standardOutput() {
       return Truth.assertThat(actual().output);
+    }
+    
+    public IntegerSubject exitCode() {
+      return Truth.assertThat(actual().exitCode);
     }
     
   }

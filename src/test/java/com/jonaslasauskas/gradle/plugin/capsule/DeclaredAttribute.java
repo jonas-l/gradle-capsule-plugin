@@ -4,6 +4,7 @@ import static com.jonaslasauskas.gradle.plugin.ExecutionSubject.assertThat;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
@@ -293,6 +294,81 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     Execution execution = capsuleJar.run();
     
     assertThat(execution).succeededAnd().standardOutput().contains("Hello world!");
+  }
+  
+  @Test public void capsule_in_class_path_includes_capsule_when_set_to_true() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    capsuleInClassPath = true",
+            "  }",
+            "  from('capsule.txt')",
+            "}")
+        .withFile("capsule.txt", "resource in capsule")
+        .withFile("src/main/java/test/Main.java",
+            "package test;",
+            "import java.io.*;",
+            "class Main {",
+            "  public static void main(String[] args) throws Exception {",
+            "    InputStream resourceStream = Main.class.getClassLoader().getResourceAsStream(\"capsule.txt\");",
+            "    if (resourceStream == null) {",
+            "      System.out.println(\"capsule.txt not found in \" + System.getProperty(\"java.class.path\"));",
+            "      System.exit(1);",
+            "    }",
+            "    System.out.println(new BufferedReader(new InputStreamReader(resourceStream)).readLine());",
+            "    System.out.println(\"capsule.txt found in \" + System.getProperty(\"java.class.path\"));",
+            "  }",
+            "}")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).succeededAnd().standardOutput().contains("resource in capsule");
+  }
+  
+  @Ignore("Possibly bug in Capsule: setting Capsule-In-Class-Path to 'false' still includes capsule jar to classpath") //
+  @Test public void capsule_in_class_path_does_not_include_capsule_when_set_to_false() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    capsuleInClassPath = false",
+            "  }",
+            "  from('capsule.txt')",
+            "}")
+        .withFile("capsule.txt", "resource in capsule")
+        .withFile("src/main/java/test/Main.java",
+            "package test;",
+            "import java.io.*;",
+            "class Main {",
+            "  public static void main(String[] args) throws Exception {",
+            "    InputStream resourceStream = Main.class.getClassLoader().getResourceAsStream(\"capsule.txt\");",
+            "    if (resourceStream == null) {",
+            "      System.out.println(\"capsule.txt not found in \" + System.getProperty(\"java.class.path\"));",
+            "      System.exit(1);",
+            "    }",
+            "    System.out.println(new BufferedReader(new InputStreamReader(resourceStream)).readLine());",
+            "    System.out.println(\"capsule.txt found in \" + System.getProperty(\"java.class.path\"));",
+            "  }",
+            "}")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).failedAnd().exitCode().isEqualTo(1);
   }
   
 }

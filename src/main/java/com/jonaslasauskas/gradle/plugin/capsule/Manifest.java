@@ -39,6 +39,8 @@ public final class Manifest {
   
   @Input private Map<String, String> systemProperties = new LinkedHashMap<>();
   
+  @Input private boolean capsuleInClassPath = true;
+  
   
   public void setApplicationId(String id) {
     applicationId = id;
@@ -132,6 +134,14 @@ public final class Manifest {
     this.systemProperties = systemProperties;
   }
   
+  public boolean isCapsuleInClassPath() {
+    return capsuleInClassPath;
+  }
+  
+  public void setCapsuleInClassPath(boolean capsuleInClassPath) {
+    this.capsuleInClassPath = capsuleInClassPath;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -146,6 +156,7 @@ public final class Manifest {
         .putIfPresent("Args", args)
         .putIfPresent("Environment-Variables", environmentVariables)
         .putIfPresent("System-Properties", systemProperties)
+        .putIfPresent("Capsule-In-Class-Path", !capsuleInClassPath ? "false" : null)
         .writeTo(jarManifest);
   }
   
