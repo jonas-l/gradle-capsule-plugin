@@ -2,6 +2,8 @@ plugins {
   id "java-gradle-plugin"
 }
 
+version = project.hasProperty('releaseVersion') ? project.releaseVersion : null
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
