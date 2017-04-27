@@ -15,6 +15,15 @@ import org.gradle.api.tasks.Optional;
 
 public final class Manifest {
   
+  public static final LogLevel NONE = LogLevel.NONE;
+  
+  public static final LogLevel QUIET = LogLevel.QUIET;
+  
+  public static final LogLevel VERBOSE = LogLevel.VERBOSE;
+  
+  public static final LogLevel DEBUG = LogLevel.DEBUG;
+  
+  
   public final String premainClass = "Capsule";
   
   public final String mainClass = "Capsule";
@@ -40,6 +49,8 @@ public final class Manifest {
   @Input private Map<String, String> systemProperties = new LinkedHashMap<>();
   
   @Input private boolean capsuleInClassPath = true;
+  
+  @Input @Optional private LogLevel logLevel;
   
   
   public void setApplicationId(String id) {
@@ -142,6 +153,14 @@ public final class Manifest {
     this.capsuleInClassPath = capsuleInClassPath;
   }
   
+  public LogLevel getLogLevel() {
+    return logLevel;
+  }
+  
+  public void setLogLevel(LogLevel level) {
+    this.logLevel = level;
+  }
+  
   public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
         .putIfPresent("Premain-Class", premainClass)
@@ -157,6 +176,7 @@ public final class Manifest {
         .putIfPresent("Environment-Variables", environmentVariables)
         .putIfPresent("System-Properties", systemProperties)
         .putIfPresent("Capsule-In-Class-Path", !capsuleInClassPath ? "false" : null)
+        .putIfPresent("Capsule-Log-Level", logLevel)
         .writeTo(jarManifest);
   }
   
@@ -192,6 +212,14 @@ public final class Manifest {
     public Attributes putIfPresent(String name, List<String> values) {
       if (values != null && !values.isEmpty()) {
         map.put(name, String.join(" ", values));
+      }
+      
+      return this;
+    }
+    
+    public Attributes putIfPresent(String name, LogLevel level) {
+      if (level != null) {
+        putIfPresent(name, level.name());
       }
       
       return this;

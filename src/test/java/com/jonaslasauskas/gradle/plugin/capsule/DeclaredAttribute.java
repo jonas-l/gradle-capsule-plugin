@@ -371,4 +371,26 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
     assertThat(execution).failedAnd().exitCode().isEqualTo(1);
   }
   
+  @Test public void capsule_log_level_prints_corresponding_diagnostic_information() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    logLevel = VERBOSE",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.run();
+    
+    assertThat(execution).succeededAnd().standardError().contains("CAPSULE: Initialized app ID: test");
+  }
+  
 }
