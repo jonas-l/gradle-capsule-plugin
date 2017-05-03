@@ -14,3 +14,7 @@ env:
 build:
   ci:
   - ./gradlew --no-daemon check
+  on_success:
+  - mkdir -p shippable/testresults && cp -R build/test-results/test/*.xml shippable/testresults
+  on_failure:
+  - mkdir -p shippable/testresults && cp -R build/test-results/test/*.xml shippable/testresults
