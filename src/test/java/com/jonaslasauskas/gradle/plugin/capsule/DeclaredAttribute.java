@@ -83,6 +83,8 @@ import com.jonaslasauskas.gradle.plugin.GradleVersion;
             "  capsuleManifest {",
             "    applicationId = 'test'",
             "    applicationClass = 'test.Main'",
+            "    minJavaVersion = '1.8'",
+            "    javaVersion = '1.8'",
             "    minUpdateVersion['1.8'] = '999'",
             "  }",
             "}")
