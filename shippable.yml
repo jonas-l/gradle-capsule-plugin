@@ -1,0 +1,20 @@
+language: java
+
+jdk:
+- oraclejdk8
+
+env:
+- GRADLE_VERSION_UNDER_TEST='3.0'
+- GRADLE_VERSION_UNDER_TEST='3.1'
+- GRADLE_VERSION_UNDER_TEST='3.2.1'
+- GRADLE_VERSION_UNDER_TEST='3.3'
+- GRADLE_VERSION_UNDER_TEST='3.4.1'
+- GRADLE_VERSION_UNDER_TEST='3.5'
+
+build:
+  ci:
+  - ./gradlew --no-daemon check
+  on_success:
+  - mkdir -p shippable/testresults && cp -R build/test-results/test/*.xml shippable/testresults
+  on_failure:
+  - mkdir -p shippable/testresults && cp -R build/test-results/test/*.xml shippable/testresults
