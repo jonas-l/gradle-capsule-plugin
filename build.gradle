@@ -1,5 +1,6 @@
 plugins {
   id "java-gradle-plugin"
+  id "com.gradle.plugin-publish" version "0.9.7"
 }
 
 version = project.hasProperty('releaseVersion') ? project.releaseVersion : null
@@ -27,6 +28,20 @@ gradlePlugin {
     capsule {
       id = "com.jonaslasauskas.capsule"
       implementationClass = "com.jonaslasauskas.gradle.plugin.capsule.Plugin"
+    }
+  }
+}
+
+pluginBundle {
+  website = 'https://gitlab.com/jonas-l/gradle-capsule-plugin'
+  vcsUrl = 'https://gitlab.com/jonas-l/gradle-capsule-plugin'
+  description = 'Produces Capsule jar out of details gathered from Gradle build script'
+  tags = ['capsule', 'fatjar', 'onejar']
+
+  plugins {
+    capsule {
+      id = "com.jonaslasauskas.capsule"
+      displayName = "Capsule plugin"
     }
   }
 }
