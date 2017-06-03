@@ -53,6 +53,12 @@ check v3.5:
     GRADLE_VERSION_UNDER_TEST: '3.5'
     PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
+check v4.0:
+  <<: *check
+  variables:
+    GRADLE_VERSION_UNDER_TEST: '4.0'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
+
 publish plugin:
   stage: publish
   image: java:8-jdk-alpine
