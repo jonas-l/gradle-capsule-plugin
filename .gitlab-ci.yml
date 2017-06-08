@@ -1,5 +1,6 @@
 stages:
 - test
+- publish
 
 .check: &check
   stage: test
@@ -49,3 +50,12 @@ check v3.5:
   variables:
     GRADLE_VERSION_UNDER_TEST: '3.5'
     PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
+
+publish plugin:
+  stage: publish
+  image: java:8-jdk-alpine
+  script: |
+    apk --update add bash libstdc++
+    ./gradlew --no-daemon -PreleaseVersion=${CI_COMMIT_TAG} -Dgradle.publish.key=${GRADLE_PUBLISH_KEY} -Dgradle.publish.secret=${GRADLE_PUBLISH_SECRET} publishPlugins
+  only:
+  - tags
