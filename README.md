@@ -59,7 +59,17 @@ $ java -jar build/libs/test-capsule.jar
 ```
 
 
+Contributing
+------------
+
+[Gradle Capsule Plugin is hosted on GitLab][main-repo] but there's a [mirrored project repository on GitHub][mirrored-repo] where contributions can be submitted as well.
+
+Furthermore, there are a few guidelines which can be found in [contributing guide](CONTRIBUTING.md).
+
+
 [capsule]: http://www.capsule.io/
 [gradle-java-plugin]: https://docs.gradle.org/current/userguide/java_plugin.html
 [capsule-id]: http://www.capsule.io/user-guide/#the-capsule-id
 [gradle-jar-task]: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Jar.html
+[main-repo]: https://gitlab.com/jonas-l/gradle-capsule-plugin
+[mirrored-repo]: https://github.com/jonas-l/gradle-capsule-plugin
