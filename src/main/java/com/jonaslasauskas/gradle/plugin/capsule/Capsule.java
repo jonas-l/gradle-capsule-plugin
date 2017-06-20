@@ -17,6 +17,16 @@ import groovy.lang.Closure;
 
 
 
+/**
+ * Produces capsule jar.
+ * 
+ * <p>
+ * It is responsible for configuring {@link Jar} task to include application
+ * itself, necessary dependencies, and specifying manifest entries.
+ * 
+ * <p>
+ * This class dedicates manifest entries formatting to {@link Manifest} class.
+ */
 public class Capsule extends Jar {
   
   private Manifest capsuleManifest = new Manifest();
@@ -41,6 +51,15 @@ public class Capsule extends Jar {
     return this.capsuleManifest;
   }
   
+  /**
+   * Gives a context for the task from which default values can be resolved.
+   * 
+   * <p>
+   * Having access to the project itself, the task resolves sensible defaults
+   * for various manifest entries.
+   * 
+   * @param project Context the task is used in.
+   */
   void executesInside(Project project) {
     this.setBaseName(project.getName());
     
@@ -60,6 +79,11 @@ public class Capsule extends Jar {
     from(capsuleArtifacts.stream().map(project::zipTree).toArray());
   }
   
+  /**
+   * Resolve default values to be used in manifest.
+   * 
+   * @param project Context the default values should be resolved from.
+   */
   private void defaultAttributesUsingDetailsFrom(Project project) {
     Object projectGroup = project.getGroup();
     String projectName = project.getName();

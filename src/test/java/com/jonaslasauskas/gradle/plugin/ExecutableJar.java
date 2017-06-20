@@ -21,6 +21,10 @@ import com.google.common.base.Joiner;
 
 
 
+/**
+ * Wrapper around {@link ProcessBuilder} to build a command line, execute it and
+ * gather the outcome.
+ */
 public final class ExecutableJar {
   
   public static ExecutableJar at(File jarFile) {

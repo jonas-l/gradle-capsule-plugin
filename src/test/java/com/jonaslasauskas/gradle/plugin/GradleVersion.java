@@ -4,6 +4,9 @@ import java.util.Optional;
 
 
 
+/**
+ * Encapsulates scenarios how Gradle version can be provided for tests.
+ */
 public final class GradleVersion {
   
   public static final String underTest() {

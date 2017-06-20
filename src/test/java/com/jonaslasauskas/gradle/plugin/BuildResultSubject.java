@@ -13,9 +13,16 @@ import org.gradle.testkit.runner.TaskOutcome;
 import com.google.common.truth.FailureStrategy;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
+import com.google.common.truth.Truth;
 
 
 
+/**
+ * {@link Subject} to perform assertions on {@link BuildResult} using
+ * {@link Truth} assertion framework.
+ * 
+ * @see Truth
+ */
 public final class BuildResultSubject extends Subject<BuildResultSubject, BuildResult> {
   
   public static BuildResultSubject assertThat(BuildResult build) {

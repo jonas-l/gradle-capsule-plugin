@@ -4,6 +4,10 @@ import java.io.File;
 
 
 
+/**
+ * Special case of {@link ExecutableJar} to specify cache directory for each
+ * execution.
+ */
 public final class CapsuleJar {
   
   public static ExecutableJar at(File capsuleJarFile) {
