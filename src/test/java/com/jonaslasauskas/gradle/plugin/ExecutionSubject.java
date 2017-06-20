@@ -13,6 +13,16 @@ import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
 
 
 
+/**
+ * {@link Subject} to perform assertions on {@link Execution} using
+ * {@link Truth} assertion framework.
+ * 
+ * <p>
+ * {@link Execution} is a product of running a jar using {@link ExecutableJar}.
+ * 
+ * @see Truth
+ * @see ExecutableJar
+ */
 public final class ExecutionSubject extends Subject<ExecutionSubject, Execution> {
   
   public ExecutionSubject(FailureStrategy failureStrategy, Execution actual) {

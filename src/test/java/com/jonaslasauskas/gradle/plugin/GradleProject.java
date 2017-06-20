@@ -26,6 +26,12 @@ import org.junit.rules.TemporaryFolder;
 
 
 
+/**
+ * Gives a convenient tools for building a Gradle project.
+ * 
+ * Main purpose of this class is to ease basic (e.g. creating a file) and
+ * frequently used (e.g. java main class with trivial implementation) actions.
+ */
 public final class GradleProject extends TemporaryFolder {
   
   public static GradleProject forTestingPluginAt(File classpath) {
