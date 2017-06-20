@@ -1,4 +1,4 @@
-package com.jonaslasauskas.gradle.plugin;
+package com.jonaslasauskas.gradle.plugin.specs;
 
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.write;

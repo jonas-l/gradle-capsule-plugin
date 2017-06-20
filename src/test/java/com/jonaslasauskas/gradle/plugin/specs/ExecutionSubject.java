@@ -1,4 +1,4 @@
-package com.jonaslasauskas.gradle.plugin;
+package com.jonaslasauskas.gradle.plugin.specs;
 
 import static com.google.common.truth.Truth.assert_;
 
@@ -9,7 +9,7 @@ import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
 import com.google.common.truth.Truth;
-import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
+import com.jonaslasauskas.gradle.plugin.specs.ExecutableJar.Execution;
 
 
 
