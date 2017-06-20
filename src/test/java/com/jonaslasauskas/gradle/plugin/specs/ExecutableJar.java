@@ -1,4 +1,4 @@
-package com.jonaslasauskas.gradle.plugin;
+package com.jonaslasauskas.gradle.plugin.specs;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.CharStreams.copy;

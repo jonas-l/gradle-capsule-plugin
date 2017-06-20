@@ -1,8 +1,8 @@
-package com.jonaslasauskas.gradle.plugin.capsule;
+package com.jonaslasauskas.gradle.plugin.specs.capsule;
 
 import static com.google.common.truth.Truth.assert_;
-import static com.jonaslasauskas.gradle.plugin.BuildResultSubject.assertThat;
-import static com.jonaslasauskas.gradle.plugin.ExecutionSubject.execution;
+import static com.jonaslasauskas.gradle.plugin.specs.BuildResultSubject.assertThat;
+import static com.jonaslasauskas.gradle.plugin.specs.ExecutionSubject.execution;
 
 import java.io.File;
 
@@ -13,11 +13,11 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
 
-import com.jonaslasauskas.gradle.plugin.CapsuleJar;
-import com.jonaslasauskas.gradle.plugin.ExecutableJar;
-import com.jonaslasauskas.gradle.plugin.ExecutableJar.Execution;
-import com.jonaslasauskas.gradle.plugin.GradleProject;
-import com.jonaslasauskas.gradle.plugin.GradleVersion;
+import com.jonaslasauskas.gradle.plugin.specs.CapsuleJar;
+import com.jonaslasauskas.gradle.plugin.specs.ExecutableJar;
+import com.jonaslasauskas.gradle.plugin.specs.GradleProject;
+import com.jonaslasauskas.gradle.plugin.specs.GradleVersion;
+import com.jonaslasauskas.gradle.plugin.specs.ExecutableJar.Execution;
 
 
 

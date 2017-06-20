@@ -1,4 +1,4 @@
-package com.jonaslasauskas.gradle.plugin;
+package com.jonaslasauskas.gradle.plugin.specs;
 
 import static com.google.common.truth.Truth.assert_;
 import static org.gradle.testkit.runner.TaskOutcome.FAILED;

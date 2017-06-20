@@ -1,4 +1,4 @@
-package com.jonaslasauskas.gradle.plugin;
+package com.jonaslasauskas.gradle.plugin.specs;
 
 import java.io.File;
 
