@@ -13,6 +13,10 @@ import org.gradle.api.tasks.Optional;
 
 
 
+/**
+ * Responsible for creating manifest attributes in the format Capsule executor
+ * accepts.
+ */
 public final class Manifest {
   
   public static final LogLevel NONE = LogLevel.NONE;

@@ -8,6 +8,10 @@ import org.gradle.api.plugins.JavaPlugin;
 
 
 
+/**
+ * Introduces {@link Capsule capsule} task with all necessary dependencies on
+ * artifacts and other tasks.
+ */
 class Plugin implements org.gradle.api.Plugin<Project> {
   
   @Override public void apply(Project project) {
