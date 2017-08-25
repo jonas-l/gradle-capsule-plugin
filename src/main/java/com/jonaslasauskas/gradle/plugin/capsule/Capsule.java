@@ -25,28 +25,29 @@ import groovy.lang.Closure;
  * itself, necessary dependencies, and specifying manifest entries.
  * 
  * <p>
- * This class dedicates manifest entries formatting to {@link Manifest} class.
+ * This class dedicates manifest entries formatting to {@link RootManifest}
+ * class.
  */
 public class Capsule extends Jar {
   
-  private Manifest capsuleManifest = new Manifest();
+  private RootManifest capsuleManifest = new RootManifest();
   
   
   public Capsule() {
     this.setClassifier("capsule");
   }
   
-  @Nested public Manifest getCapsuleManifest() {
+  @Nested public RootManifest getCapsuleManifest() {
     return this.capsuleManifest;
   }
   
-  public Manifest capsuleManifest(Closure<?> configuration) {
+  public RootManifest capsuleManifest(Closure<?> configuration) {
     ConfigureUtil.configure(configuration, capsuleManifest);
     
     return this.capsuleManifest;
   }
   
-  public Manifest capsuleManifest(Action<Manifest> manifest) {
+  public RootManifest capsuleManifest(Action<RootManifest> manifest) {
     manifest.execute(getCapsuleManifest());
     return this.capsuleManifest;
   }

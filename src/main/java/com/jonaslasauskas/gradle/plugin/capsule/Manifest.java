@@ -17,7 +17,7 @@ import org.gradle.api.tasks.Optional;
  * Responsible for creating manifest attributes in the format Capsule executor
  * accepts.
  */
-public final class Manifest {
+class Manifest {
   
   public static final LogLevel NONE = LogLevel.NONE;
   
@@ -27,12 +27,6 @@ public final class Manifest {
   
   public static final LogLevel DEBUG = LogLevel.DEBUG;
   
-  
-  public final String premainClass = "Capsule";
-  
-  public final String mainClass = "Capsule";
-  
-  @Input private String applicationId;
   
   @Input private String applicationClass;
   
@@ -57,14 +51,6 @@ public final class Manifest {
   @Input @Optional private LogLevel logLevel;
   
   
-  public void setApplicationId(String id) {
-    applicationId = id;
-  }
-  
-  public String getApplicationId() {
-    return applicationId;
-  }
-  
   public void setApplicationClass(String className) {
     applicationClass = className;
   }
@@ -77,12 +63,6 @@ public final class Manifest {
   
   public String getApplicationClass() {
     return applicationClass;
-  }
-  
-  void defaultApplicationIdTo(String id) {
-    if (applicationId == null) {
-      applicationId = id;
-    }
   }
   
   public String getMinJavaVersion() {
@@ -165,11 +145,8 @@ public final class Manifest {
     this.logLevel = level;
   }
   
-  public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
+  void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
     new Attributes()
-        .putIfPresent("Premain-Class", premainClass)
-        .putIfPresent("Main-Class", mainClass)
-        .putIfPresent("Application-ID", applicationId)
         .putIfPresent("Application-Class", applicationClass)
         .putIfPresent("Min-Java-Version", minJavaVersion)
         .putIfPresent("Min-Update-Version", minUpdateVersion)
@@ -185,7 +162,7 @@ public final class Manifest {
   }
   
   
-  private static class Attributes {
+  static class Attributes {
     
     private final HashMap<String, String> map;
     
