@@ -50,6 +50,16 @@ class Manifest {
   
   @Input @Optional private LogLevel logLevel;
   
+  @Input @Optional private final String sectionName;
+  
+  
+  public Manifest() {
+    this.sectionName = null;
+  }
+  
+  public Manifest(String sectionName) {
+    this.sectionName = sectionName;
+  }
   
   public void setApplicationClass(String className) {
     applicationClass = className;
@@ -146,7 +156,7 @@ class Manifest {
   }
   
   void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
-    new Attributes()
+    Attributes attributes = new Attributes()
         .putIfPresent("Application-Class", applicationClass)
         .putIfPresent("Min-Java-Version", minJavaVersion)
         .putIfPresent("Min-Update-Version", minUpdateVersion)
@@ -157,8 +167,13 @@ class Manifest {
         .putIfPresent("Environment-Variables", environmentVariables)
         .putIfPresent("System-Properties", systemProperties)
         .putIfPresent("Capsule-In-Class-Path", !capsuleInClassPath ? "false" : null)
-        .putIfPresent("Capsule-Log-Level", logLevel)
-        .writeTo(jarManifest);
+        .putIfPresent("Capsule-Log-Level", logLevel);
+    
+    if (sectionName == null) {
+      attributes.writeTo(jarManifest);
+    } else {
+      attributes.writeTo(jarManifest, sectionName);
+    }
   }
   
   
@@ -208,6 +223,10 @@ class Manifest {
     
     public void writeTo(org.gradle.api.java.archives.Manifest manifest) {
       manifest.attributes(map);
+    }
+    
+    public void writeTo(org.gradle.api.java.archives.Manifest manifest, String sectionName) {
+      manifest.attributes(map, sectionName);
     }
     
   }

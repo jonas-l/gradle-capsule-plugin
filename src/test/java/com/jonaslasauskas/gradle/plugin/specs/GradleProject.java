@@ -69,6 +69,7 @@ public final class GradleProject extends TemporaryFolder {
   }
   
   public GradleProject withBuildScript(String... contentLines) {
+    this.buildScript.clear();
     this.buildScript.addAll(asList(contentLines));
     
     return this;
