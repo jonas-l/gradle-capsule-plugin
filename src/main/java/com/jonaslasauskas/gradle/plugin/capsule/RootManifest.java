@@ -14,7 +14,8 @@ import groovy.lang.Closure;
  * Represents main section of Capsule manifest.
  * 
  * <p>
- * It supports nested {@link #platform(Platform, Closure) platform} manifest.
+ * It supports nested {@link #platform(Platform, Closure) platform} and
+ * {@link #java(int, Closure) java version} manifests.
  */
 public final class RootManifest extends Manifest {
   
@@ -59,6 +60,12 @@ public final class RootManifest extends Manifest {
     Manifest platformManifest = new Manifest(platform.sectionName);
     ConfigureUtil.configure(configuration, platformManifest);
     nestedManifests.add(platformManifest);
+  }
+  
+  void java(int version, Closure<?> configuration) {
+    Manifest javaManifest = new Manifest("Java-" + version);
+    ConfigureUtil.configure(configuration, javaManifest);
+    nestedManifests.add(javaManifest);
   }
   
   @Override void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
