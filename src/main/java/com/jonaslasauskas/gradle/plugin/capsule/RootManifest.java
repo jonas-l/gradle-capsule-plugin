@@ -3,6 +3,7 @@ package com.jonaslasauskas.gradle.plugin.capsule;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Input;
 import org.gradle.util.ConfigureUtil;
 
@@ -70,6 +71,8 @@ public final class RootManifest extends Manifest {
   }
   
   void mode(String name, Closure<?> configuration) {
+    if (Platform.anySectionNameMatches(name)) { throw new GradleException("Capsule mode cannot be named as platform '" + name + "'."); }
+    
     Manifest modeManifest = new Manifest(name);
     ConfigureUtil.configure(configuration, modeManifest);
     nestedManifests.add(modeManifest);

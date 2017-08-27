@@ -60,4 +60,21 @@ import com.jonaslasauskas.gradle.plugin.specs.GradleVersion;
     assertThat(execution).succeededAnd().standardOutput().isEqualTo("special");
   }
   
+  @Test public void matching_platform_name_fails_the_build() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    mode('Windows') {}",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildAndFailWithArguments("assemble");
+  }
+  
 }

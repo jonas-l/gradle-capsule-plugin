@@ -123,6 +123,17 @@ public final class GradleProject extends TemporaryFolder {
         .build();
   }
   
+  public BuildResult buildAndFailWithArguments(String... arguments) {
+    writeFiles();
+    
+    return runner
+        .withProjectDir(getRoot())
+        .withTestKitDir(new File(getRoot(), ".gradle_home"))
+        .withArguments(arguments)
+        .withDebug(true)
+        .buildAndFail();
+  }
+  
   private void writeFiles() {
     files.forEach(this::writeFileContent);
     
