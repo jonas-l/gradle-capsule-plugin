@@ -65,13 +65,14 @@ public final class RootManifest extends Manifest {
   }
   
   void java(int version, Closure<?> configuration) {
-    Manifest javaManifest = new Manifest("Java-" + version);
+    Manifest javaManifest = new Manifest(JavaVersion.of(version).sectionName);
     ConfigureUtil.configure(configuration, javaManifest);
     nestedManifests.add(javaManifest);
   }
   
   void mode(String name, Closure<?> configuration) {
     if (Platform.anySectionNameMatches(name)) { throw new GradleException("Capsule mode cannot be named as platform '" + name + "'."); }
+    if (JavaVersion.validRepresentation(name)) { throw new GradleException("Capsule mode cannot be named as java version '" + name + "'."); }
     
     Manifest modeManifest = new Manifest(name);
     ConfigureUtil.configure(configuration, modeManifest);

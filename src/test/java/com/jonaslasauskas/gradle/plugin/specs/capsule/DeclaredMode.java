@@ -77,4 +77,21 @@ import com.jonaslasauskas.gradle.plugin.specs.GradleVersion;
         .buildAndFailWithArguments("assemble");
   }
   
+  @Test public void matching_java_version_fails_the_build() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    mode('Java-6') {}",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildAndFailWithArguments("assemble");
+  }
+  
 }
