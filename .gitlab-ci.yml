@@ -58,6 +58,12 @@ check v4.0:
   variables:
     GRADLE_VERSION_UNDER_TEST: '4.0'
     PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
+ 
+check v4.1:
+  <<: *check
+  variables:
+    GRADLE_VERSION_UNDER_TEST: '4.1'
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
 
 publish plugin:
   stage: publish
