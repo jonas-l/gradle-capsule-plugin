@@ -1,6 +1,7 @@
 package com.jonaslasauskas.gradle.plugin.specs.capsule;
 
 import static com.jonaslasauskas.gradle.plugin.specs.ExecutionSubject.assertThat;
+import static java.util.Arrays.asList;
 
 import java.io.File;
 
@@ -92,6 +93,43 @@ import com.jonaslasauskas.gradle.plugin.specs.GradleVersion;
         .withEntryPointClassAt("test", "Main")
         .named("test")
         .buildAndFailWithArguments("assemble");
+  }
+  
+  @Test public void supports_nested_platform_declaration() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    mode('special') {",
+            "      platform(WINDOWS) {",
+            "        systemProperties['mode-platform'] = 'special-windows'",
+            "      }",
+            "      platform(POSIX) {",
+            "        systemProperties['mode-platform'] = 'special-posix'",
+            "      }",
+            "      systemProperties['mode-platform'] = 'special'",
+            "    }",
+            "    systemProperties['mode-platform'] = 'default'",
+            "  }",
+            "}")
+        .withFile("src/main/java/test/Main.java",
+            "package test;",
+            "class Main {",
+            "  public static void main(String[] args) {",
+            "    System.out.print(System.getProperty(\"mode-platform\"));",
+            "  }",
+            "}")
+        .named("test")
+        .buildWithArguments("assemble");
+    
+    ExecutableJar capsuleJar = CapsuleJar.at(project.file("build/libs/test-capsule.jar"));
+    Execution execution = capsuleJar.withSystemProperty("capsule.mode", "special").run();
+    
+    assertThat(execution).succeededAnd().standardOutput().isIn(asList("special-windows", "special-posix"));
   }
   
 }

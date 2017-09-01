@@ -61,6 +61,10 @@ class Manifest {
     this.sectionName = sectionName;
   }
   
+  String sectionNamePostfixedWith(String postfix) {
+    return this.sectionName != null ? this.sectionName + "-" + postfix : postfix;
+  }
+  
   public void setApplicationClass(String className) {
     applicationClass = className;
   }
