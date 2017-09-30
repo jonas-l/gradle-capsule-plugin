@@ -8,8 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
+
+import groovy.lang.Closure;
 
 
 
@@ -17,7 +20,7 @@ import org.gradle.api.tasks.Optional;
  * Responsible for creating manifest attributes in the format Capsule executor
  * accepts.
  */
-public final class Manifest {
+class Manifest {
   
   public static final LogLevel NONE = LogLevel.NONE;
   
@@ -27,12 +30,6 @@ public final class Manifest {
   
   public static final LogLevel DEBUG = LogLevel.DEBUG;
   
-  
-  public final String premainClass = "Capsule";
-  
-  public final String mainClass = "Capsule";
-  
-  @Input private String applicationId;
   
   @Input private String applicationClass;
   
@@ -56,13 +53,19 @@ public final class Manifest {
   
   @Input @Optional private LogLevel logLevel;
   
+  @Input @Optional private final String sectionName;
   
-  public void setApplicationId(String id) {
-    applicationId = id;
+  
+  public Manifest() {
+    this.sectionName = null;
   }
   
-  public String getApplicationId() {
-    return applicationId;
+  public Manifest(String sectionName) {
+    this.sectionName = sectionName;
+  }
+  
+  String sectionNamePostfixedWith(String postfix) {
+    return this.sectionName != null ? this.sectionName + "-" + postfix : postfix;
   }
   
   public void setApplicationClass(String className) {
@@ -77,12 +80,6 @@ public final class Manifest {
   
   public String getApplicationClass() {
     return applicationClass;
-  }
-  
-  void defaultApplicationIdTo(String id) {
-    if (applicationId == null) {
-      applicationId = id;
-    }
   }
   
   public String getMinJavaVersion() {
@@ -165,11 +162,12 @@ public final class Manifest {
     this.logLevel = level;
   }
   
-  public void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
-    new Attributes()
-        .putIfPresent("Premain-Class", premainClass)
-        .putIfPresent("Main-Class", mainClass)
-        .putIfPresent("Application-ID", applicationId)
+  void mode(String mode, Closure<?> configuration) {
+    throw new GradleException("Manifest section '" + this.sectionName + "' is not allowed to declare mode.");
+  }
+  
+  void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {
+    Attributes attributes = new Attributes()
         .putIfPresent("Application-Class", applicationClass)
         .putIfPresent("Min-Java-Version", minJavaVersion)
         .putIfPresent("Min-Update-Version", minUpdateVersion)
@@ -180,12 +178,17 @@ public final class Manifest {
         .putIfPresent("Environment-Variables", environmentVariables)
         .putIfPresent("System-Properties", systemProperties)
         .putIfPresent("Capsule-In-Class-Path", !capsuleInClassPath ? "false" : null)
-        .putIfPresent("Capsule-Log-Level", logLevel)
-        .writeTo(jarManifest);
+        .putIfPresent("Capsule-Log-Level", logLevel);
+    
+    if (sectionName == null) {
+      attributes.writeTo(jarManifest);
+    } else {
+      attributes.writeTo(jarManifest, sectionName);
+    }
   }
   
   
-  private static class Attributes {
+  static class Attributes {
     
     private final HashMap<String, String> map;
     
@@ -231,6 +234,10 @@ public final class Manifest {
     
     public void writeTo(org.gradle.api.java.archives.Manifest manifest) {
       manifest.attributes(map);
+    }
+    
+    public void writeTo(org.gradle.api.java.archives.Manifest manifest, String sectionName) {
+      manifest.attributes(map, sectionName);
     }
     
   }

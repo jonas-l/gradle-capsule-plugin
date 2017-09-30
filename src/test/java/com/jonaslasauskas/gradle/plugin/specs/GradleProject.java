@@ -69,6 +69,7 @@ public final class GradleProject extends TemporaryFolder {
   }
   
   public GradleProject withBuildScript(String... contentLines) {
+    this.buildScript.clear();
     this.buildScript.addAll(asList(contentLines));
     
     return this;
@@ -120,6 +121,17 @@ public final class GradleProject extends TemporaryFolder {
         .withArguments(arguments)
         .withDebug(true)
         .build();
+  }
+  
+  public BuildResult buildAndFailWithArguments(String... arguments) {
+    writeFiles();
+    
+    return runner
+        .withProjectDir(getRoot())
+        .withTestKitDir(new File(getRoot(), ".gradle_home"))
+        .withArguments(arguments)
+        .withDebug(true)
+        .buildAndFail();
   }
   
   private void writeFiles() {
