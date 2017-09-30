@@ -16,6 +16,7 @@ stages:
     when: on_failure
   except:
   - tags
+  - schedules
 
 check v3.0:
   <<: *check
@@ -70,6 +71,26 @@ check v4.2:
   variables:
     GRADLE_VERSION_UNDER_TEST: '4.2'
     PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
+
+check latest:
+  stage: test
+  image: java:8-jdk-alpine
+  variables:
+    PERSISTENT_TEST_GRADLE_PROJECT_DIR: 'build/tmp'
+  script: |
+    apk --update add libstdc++ curl jq
+    GRADLE_VERSION_UNDER_TEST=`curl --silent --show-error https://services.gradle.org/versions/nightly | jq --raw-output '.version'`
+    echo Testing against Gradle version $GRADLE_VERSION_UNDER_TEST
+    ./gradlew --no-daemon check
+  artifacts:
+    name: '${CI_PROJECT_NAME}_${CI_BUILD_ID}'
+    paths:
+    - build/tmp
+    expire_in: 7 days
+    when: on_failure
+  only:
+  - schedules
+  allow_failure: true
 
 publish plugin:
   stage: publish
