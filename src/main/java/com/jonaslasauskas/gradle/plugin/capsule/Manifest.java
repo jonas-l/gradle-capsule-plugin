@@ -8,8 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
+
+import groovy.lang.Closure;
 
 
 
@@ -157,6 +160,10 @@ class Manifest {
   
   public void setLogLevel(LogLevel level) {
     this.logLevel = level;
+  }
+  
+  void mode(String mode, Closure<?> configuration) {
+    throw new GradleException("Manifest section '" + this.sectionName + "' is not allowed to declare mode.");
   }
   
   void writeTo(org.gradle.api.java.archives.Manifest jarManifest) {

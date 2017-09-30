@@ -132,4 +132,42 @@ import com.jonaslasauskas.gradle.plugin.specs.GradleVersion;
     assertThat(execution).succeededAnd().standardOutput().isIn(asList("special-windows", "special-posix"));
   }
   
+  @Test public void is_prevented_for_platform_manifest() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    platform(POSIX) {",
+            "      mode('invalid') {}",
+            "    }",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildAndFailWithArguments("assemble");
+  }
+  
+  @Test public void is_prevented_for_java_version_manifest() throws Exception {
+    project
+        .withBuildScript(
+            "plugins { id 'com.jonaslasauskas.capsule' }",
+            "repositories { jcenter() }",
+            "capsule { ",
+            "  capsuleManifest {",
+            "    applicationId = 'test'",
+            "    applicationClass = 'test.Main'",
+            "    java(6) {",
+            "      mode('invalid') {}",
+            "    }",
+            "  }",
+            "}")
+        .withEntryPointClassAt("test", "Main")
+        .named("test")
+        .buildAndFailWithArguments("assemble");
+  }
+  
 }
